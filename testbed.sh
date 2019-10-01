@@ -49,6 +49,8 @@ cd $CASEROOT/${CASENAME} # Move to the case's dir
 #./xmlchange --file=env_run.xml REST_N=5
 #./xmlchange -file env_build.xml -id CAM_CONFIG_OPTS -val '-phys cam5'
 
+# Do I need to modify the env_mach_pres.xml file here? How do I do that?
+
 # Move modified WBF process into SourceMods dir:
 cp $ModSource/micro_mg_cam.F90 /$CASEROOT/${CASENAME}/SourceMods/src.cam
 cp $ModSource/micro_mg2_0.F90 /$CASEROOT/${CASENAME}/SourceMods/src.cam
