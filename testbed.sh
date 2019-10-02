@@ -9,10 +9,10 @@ dir1=~/Documents/bash_scripts
 cd $dir1
 
 models=("noresm-dev", "cesm", "noresm-dev-10072019")
-compsets=("NF2000climo", "noresm-dev-10072019", "N1850OCBDRDDMS")
+compsets=("NF2000climo", "N1850OCBDRDDMS")
 resolutions=("f19_tn14")
 
-# Where ./create_cash is called from:
+# Where ./create_case is called from:
 Modelroot=/cluster/home/jonahks/p/jonahks/models/${models[2]}/cime/scripts
 
 # Where the case it setup, and user_nl files are stored
@@ -67,13 +67,16 @@ cp $ModSource/nucleate_ice.F90 /$CASEROOT/${CASENAME}/SourceMods/src.cam
 ./case.setup
 
 # Will need to modify the nl files appropriately here to choose output
-# CAM adjustments, I don't entirely understand the syntax here:
+# CAM adjustments, I don't entirely understand the syntax here, but all the formatting after the first line is totally preserved:
 #cat <<TXT2 >> user_nl_cam
 #&aerosol_nli  # Not sure what this is.
 # fincl1 = # list variables to add to first history file here
+# TXT2
+
+# build, create *_in files under run/
+./case.build
 
 # Submit the case
 ./case.submit
-echo $Modelroot
 
 
