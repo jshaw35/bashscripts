@@ -4,6 +4,23 @@
 # Started by Jonah Shaw 19/9/26
 # Testing bash scripts offline to learn functionality
 
+# Search and replace function
+function ponyfyer() {
+    local search=$1 ;
+    local replace=$2 ;
+    local loc=$3 ;
+    # Note the double quotes
+    sed -i "s/${search}/${replace}/g" ${loc} ;
+}
+
+# Name in the input arguments:
+args=("$@")
+CASENAME=${args[0]}  # uniquecasename, maybe add a timestamp in the python script
+wbf=${args[1]}          # wbf multiplier
+inp=${args[2]}          # inp multiplier
+
+echo ${args[0]} ${args[1]} ${args[2]}
+
 dir1=~/Documents/bash_scripts
 
 cd $dir1
@@ -20,10 +37,10 @@ CASEROOT=/cluster/home/jonahks/p/jonahks/cases
 
 # Where FORTRAN files contains microphysics modifications are stored
 # May require future subdirectories
-ModSource=/cluster/home/jonahks/p/jonahks/modfiles
+ModSource=/cluster/home/jonahks/p/jonahks/modfiles/slf_wbf
 
 # Case name, unique, could be configured as an input arg:
-CASENAME=NF2000climo_reshere_initialtest
+# CASENAME=NF2000climo_reshere_initialtest
 
 COMPSET=${compset[0]} 		# NF2000climo
 RES=${resolutions[0]}           # f19_tn14
@@ -39,7 +56,7 @@ MISC=--run-unsupported
                  --project ${PROJECT} \
                  $MISC
 
-cd $CASEROOT/${CASENAME} # Move to the case's dir
+cd ${CASEROOT}/${CASENAME} # Move to the case's dir
 
 # Set run time and restart variables within env_run.xml
 #./xmlchange --file=env_run.xml RESUBMIT=3
@@ -52,14 +69,21 @@ cd $CASEROOT/${CASENAME} # Move to the case's dir
 # Do I need to modify the env_mach_pres.xml file here? How do I do that?
 
 # Move modified WBF process into SourceMods dir:
-cp $ModSource/micro_mg_cam.F90 /$CASEROOT/${CASENAME}/SourceMods/src.cam
-cp $ModSource/micro_mg2_0.F90 /$CASEROOT/${CASENAME}/SourceMods/src.cam
+cp ${ModSource}/micro_mg_cam.F90 /${CASEROOT}/${CASENAME}/SourceMods/src.cam
+cp ${ModSource}/micro_mg2_0.F90 /${CASEROOT}/${CASENAME}/SourceMods/src.cam
 
 # Move modified INP nucleation process into SourceMods dir:
-cp $ModSource/microp_aero.F90 /$CASEROOT/${CASENAME}/SourceMods/src.cam
-cp $ModSource/nucleate_ice_cam.F90 /$CASEROOT/${CASENAME}/SourceMods/src.cam
-cp $ModSource/nucleate_ice.F90 /$CASEROOT/${CASENAME}/SourceMods/src.cam
+cp ${ModSource}/microp_aero.F90 /${CASEROOT}/${CASENAME}/SourceMods/src.cam
+cp ${ModSource}/nucleate_ice_cam.F90 /${CASEROOT}/${CASENAME}/SourceMods/src.cam
+cp ${ModSource}/nucleate_ice.F90 /${CASEROOT}/${CASENAME}/SourceMods/src.cam
 
+# Now use ponyfyer to set the values within the sourcemod files. Ex:
+# ponyfyer 'wahooey' 'BUTT' 'pretend_fortran.F90'
+mgcam_path=/${CASEROOT}/${CASENAME}/SourceMods/src.cam/micro_mg_cam.F90
+ponyfyer 'wbf_tag' ${wbf} ${mgcam_path}
+
+inp_path=/${CASEROOT}/${CASENAME}/SourceMods/src.cam/nucleate_ice.F90
+ponyfyer 'inp_tag' ${inp} ${mgcam_path}
 
 # Will need to set these values in some manner now
 
