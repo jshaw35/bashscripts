@@ -5,8 +5,16 @@
 import pandas as pd
 import numpy as np
 import os
+from datetime import datetime
 
-data = pd.read_csv("sample_param_set.csv")  # specify the data set here. Format is [casename, runyet, wbf, inp]
+day = datetime.now()
+daystamp = day.strftime("/%Y%m%d")
+tstamp = day.strftime("%H%M%S")
+allstamp = day.strftime("_%Y%m%d_%H%M%S")
+
+param_set = "sample_param_set.csv"
+
+data = pd.read_csv(param_set)  # specify the data set here. Format is [casename, runyet, wbf, inp]
 
 # Testing functionality...
 # data.loc[2,'run'] = 1
@@ -24,6 +32,8 @@ for i in range(rows):
         # adjust .csv so that the case is not resubmitted:
         data.loc[i,'run'] = 1
         data.to_csv("sample_param_set2.csv", sep='\t')  # This needs to be changed to be the original .csv
-        str_arg = ' ' + str(data.loc[i,'casename']) + ' ' + str(data.loc[i,'slf_mult']) + ' ' + str(data.loc[i,'inp_mult'])
+        casename = param_set[:-4] + "_" + str(data.loc[i,'casename']) + allstamp
+        str_arg = casename + ' ' + str(data.loc[i,'slf_mult']) + ' ' + str(data.loc[i,'inp_mult'])
         print('submitting: ' + str_arg)
-        os.system('sh print_params.sh' + str_arg) # call bash script
+        # os.system('sh print_params.sh ' + str_arg) # call bash script
+        os.system('sh slf_only.sh ' + str_arg) # call bash script
