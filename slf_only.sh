@@ -26,37 +26,42 @@ CASENAME=${args[0]}  # uniquecasename, maybe add a timestamp in the python scrip
 wbf=${args[1]}          # wbf multiplier
 inp=${args[2]}          # inp multiplier
 
-echo ${args[0]} ${args[1]} ${args[2]}
+#echo ${args[0]} ${args[1]} ${args[2]}
 
 ############
 # SET CASE PARAMETERS
 ############
 
-models=("noresm-dev", "cesm", "noresm-dev-10072019")
-compsets0=("NF2000climo", "N1850OCBDRDDMS")
+models=("noresm-dev" "cesm" "noresm-dev-10072019")
+compsets0=("NF2000climo" "N1850OCBDRDDMS")
 resolutions=("f19_tn14")
 machines=('fram')
 projects=('nn9600k')
 
 # Where ./create_case is called from:
-ModelRoot=/cluster/home/jonahks/p/jonahks/models/${models[2]}/cime/scripts
+ModelRoot=/cluster/home/jonahks/p/jonahks/models/${models[0]}/cime/scripts
 
 # Where the case it setup, and user_nl files are stored
 CASEROOT=/cluster/home/jonahks/p/jonahks/cases
 
 # Where FORTRAN files contains microphysics modifications are stored
 # May require future subdirectories
-ModSource=/cluster/home/jonahks/p/jonahks/modfiles/slf_wbf
+ModSource=/cluster/home/jonahks/sourcemods/wbf_slf
 
 # Case name, unique, could be configured as an input arg:
 # CASENAME=NF2000climo_reshere_initialtest
 
 # Set indices to select from arrays here
-COMPSET=${compset[0]}
-RES=${resolutions[0]}
-MACH=${machines[0]}
-PROJECT=${projects[0]}
+# COMPSET=${compset[0]}
+# RES=${resolutions[0]}
+# MACH=${machines[0]}
+# PROJECT=${projects[0]}
 MISC=--run-unsupported
+
+COMPSET=NF2000climo
+RES=f19_tn14
+MACH=fram
+PROJECT=nn9600k
 
 echo ${CASEROOT}/${CASENAME} ${COMPSET} ${RES} ${MACH} ${PROJECT} $MISC
 
@@ -65,8 +70,9 @@ echo ${CASEROOT}/${CASENAME} ${COMPSET} ${RES} ${MACH} ${PROJECT} $MISC
 #############
 
 cd ${ModelRoot} # Move to appropriate directory
+#pwd
 
-exit 1
+#exit 1
 
 # Create env_*.xml files
 ./create_newcase --case ${CASEROOT}/${CASENAME} \
