@@ -33,7 +33,7 @@ inp=${args[2]}          # inp multiplier
 ############
 
 models=("noresm-dev" "cesm" "noresm-dev-10072019")
-compsets0=("NF2000climo" "N1850OCBDRDDMS")
+compsets=("NF2000climo" "N1850OCBDRDDMS")
 resolutions=("f19_tn14")
 machines=('fram')
 projects=('nn9600k')
@@ -52,16 +52,16 @@ ModSource=/cluster/home/jonahks/sourcemods/wbf_slf
 # CASENAME=NF2000climo_reshere_initialtest
 
 # Set indices to select from arrays here
-# COMPSET=${compset[0]}
-# RES=${resolutions[0]}
-# MACH=${machines[0]}
-# PROJECT=${projects[0]}
+COMPSET=${compsets[0]}
+RES=${resolutions[0]}
+MACH=${machines[0]}
+PROJECT=${projects[0]}
 MISC=--run-unsupported
 
-COMPSET=NF2000climo
-RES=f19_tn14
-MACH=fram
-PROJECT=nn9600k
+# COMPSET=NF2000climo
+# RES=f19_tn14
+# MACH=fram
+# PROJECT=nn9600k
 
 echo ${CASEROOT}/${CASENAME} ${COMPSET} ${RES} ${MACH} ${PROJECT} $MISC
 
@@ -82,12 +82,15 @@ cd ${ModelRoot} # Move to appropriate directory
                  --project ${PROJECT} \
                  $MISC
 
+exit 1
+
 cd ${CASEROOT}/${CASENAME} # Move to the case's dir
 
 # Set run time and restart variables within env_run.xml
 #./xmlchange --file=env_run.xml RESUBMIT=3
 ./xmlchange --file=env_run.xml STOP_OPTION=nmonth
 ./xmlchange --file=env_run.xml STOP_N=1
+# ./xmlchange --file=env_batch.xml JOB_WALLCLOCK_TIME=00:50:00 --subgroup case.run 
 #./xmlchange --file=env_run.xml REST_OPTION=nyears
 #./xmlchange --file=env_run.xml REST_N=5
 #./xmlchange -file env_build.xml -id CAM_CONFIG_OPTS -val '-phys cam5'
