@@ -109,7 +109,8 @@ cp ${ModSource}/micro_mg2_0.F90 /${CASEROOT}/${CASENAME}/SourceMods/src.cam
 # Now use ponyfyer to set the values within the sourcemod files. Ex:
 # ponyfyer 'wahooey' 'BUTT' 'pretend_fortran.F90'
 mgcam_path=/${CASEROOT}/${CASENAME}/SourceMods/src.cam/micro_mg2_0.F90
-ponyfyer 'wbf_tag' ${wbf} ${mgcam_path}
+# ponyfyer 'wbf_tag' ${wbf} ${mgcam_path}
+ponyfyer 'wbf_tag = 1.' ${wbf} ${mgcam_path}
 
 # inp_path=/${CASEROOT}/${CASENAME}/SourceMods/src.cam/nucleate_ice.F90
 # ponyfyer 'inp_tag' ${inp} ${mgcam_path}
@@ -122,10 +123,12 @@ exit 1
 
 # Will need to modify the nl files appropriately here to choose output
 # CAM adjustments, I don't entirely understand the syntax here, but all the formatting after the first line is totally preserved:
-#cat <<TXT2 >> user_nl_cam
-#&aerosol_nli  # Not sure what this is.
-# fincl1 = # list variables to add to first history file here
-# TXT2
+# Not sure about user_nl_cam
+cat <<TXT2 >> user_nl_cam
+&aerosol_nl
+fincl1 = 'BERGO', 'BERGSO', 'SLFXCLD_ISOTM', 'SADLIQXCLD_ISOTM', 'SADICEXCLD_ISOTM', 'BERGOXCLD_ISOTM',
+'BERGSOXCLD_ISOTM', 'CLD_ISOTM', 'CLDTAU', 'CLD_SLF', 'CLD_ISOTM_SLF', 'MNUCCTO', 'MNUCCRO', 'MNUCCCO', 'MNUCCDOhet', 'MNUCCRO'
+TXT2
 
 exit 1
 
