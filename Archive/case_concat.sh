@@ -2,11 +2,29 @@
 
 compsets=("NF2000climo" "N1850OCBDRDDMS")
 
-echo pwd
+#TEST=$(pwd)
+#echo $TEST
 
-exit 1 
+FILES=$(find *.nc)
+#echo $FILES
+
+noth=0
+for i in $FILES
+do
+    if [ $noth -eq 0 ]
+    then
+        noth=2
+        casename=${i%%.*}
+    fi
+done
+
+echo $casename.nc
+
+#exit 1 
 
 cdo -f nc2 mergetime *h0* ${casename}.nc # merge all h0 files and name with the casename
+
+exit 1
 
 # -s is silent mode, -f is output file format
 cdo -s -f nc2 -copy \
