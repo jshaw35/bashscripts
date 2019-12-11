@@ -12,7 +12,8 @@ do
     if [ $noth -eq 0 ]
     then
         noth=2
-        casename=${i%%.*}
+        # casename=${i%%.*} # problem here if '.' included in the casename. What to do?
+        casename=${i::-18} # This should work for the extension format '.cam.h0.0002-03.nc'
     fi
 done
 
