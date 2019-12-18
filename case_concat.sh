@@ -1,7 +1,16 @@
 #! /bin/bash -x
 
-#TEST=$(pwd)
-#echo $TEST
+# TODO: Edit so that it can be called without being in the directory of interest
+############
+# SET INPUT ARGS
+############
+
+args=("$@")
+dir_path=${args[0]}     # Directory path to h0 files
+
+echo ${dir_path}
+
+cd ${dir_path}
 
 FILES=$(find *.nc)
 #echo $FILES
