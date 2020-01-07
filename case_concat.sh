@@ -8,6 +8,12 @@
 args=("$@")
 dir_path=${args[0]}     # Directory path to h0 files
 
+# If running out of a directory and not passing it as an argument
+if [ $# -eq 0 ]
+  then
+    dir_path = $pwd
+fi
+
 echo ${dir_path}
 
 cd ${dir_path}
