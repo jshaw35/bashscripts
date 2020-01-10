@@ -1,6 +1,5 @@
 #! /bin/bash -x
 
-# TODO: Edit so that it can be called without being in the directory of interest
 ############
 # SET INPUT ARGS
 ############
@@ -9,18 +8,18 @@ args=("$@")
 dir_path=${args[0]}     # Directory path to h0 files
 
 # If running out of a directory and not passing it as an argument
-if [ $# -eq 0 ]
-  then
-    dir_path = $pwd
+if [ $# -eq 0 ] ;  then
+   FILES=$(find *.nc)
+else
+   cd  ${dir_path}
 fi
 
-echo ${dir_path}
-
-cd ${dir_path}
+echo combining files in ${dir_path}
 
 FILES=$(find *.nc)
-#echo $FILES
+echo $FILES
 
+# Weird for loop to grab casename.
 noth=0
 for i in $FILES
 do
