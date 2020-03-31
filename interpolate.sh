@@ -3,6 +3,11 @@
 # By Jonah Shaw, 03032020
 # Interpolating existing reanalysis data to a different resolution.
 # Modelled after lines 207-230 in conv_ERA_interim.sh
+# TO-DO: build in 'help' feature using getopt
+
+# Example use:
+# sh interpolate.sh ERA_f19_tn14/res_file_T.nc ERA_f09f09_32L_days/ ERA_f19_tn14/ 2008
+
 
 ############
 # SET INPUT ARGS
