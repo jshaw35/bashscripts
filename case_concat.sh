@@ -65,4 +65,7 @@ fi
 #cdo select,name=u_gr_p,v_gr_p,u_10m_gr,v_10m_gr,DateTime $FILES ${casename}.nc
 cdo select,name=$finalvars *h0* ${casename}.nc
 
+# move to the general case output directory
+mv ${casename}.nc ../../
+
 exit 1
