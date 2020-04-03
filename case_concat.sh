@@ -4,29 +4,39 @@
 # Variables to concatenate
 ##########################
 
-vars=T,NUMICE,BERGO,BERGSO,MNUCCTO,MNUCCRO,MNUCCCO,MNUCCDOhet,MNUCCDO,DSTFREZIMM,\ 
-        DSTFREZCNT,DSTFREZDEP,BCFREZIMM,BCFREZCNT,BCFREZDEP,NUMICE10s,NUMICE10sDST,\
-        NUMICE10sBC,dc_num,dst1_num,dst3_num,bc_c1_num,dst_c1_num,dst_c3_num,\
-        bc_num_scaled,dst1_num_scaled,dst3_num_scaled,DSTNIDEP,DSTNICNT,DSTNIIMM,\
-        BCNIDEP,BCNICNT,BCNIIMM,NUMICE10s,NUMIMM10sDST,NUMIMM10sBC,MPDI2V,MPDI2W,\
-        QISEDTEN,NIMIX_HET,NIMIX_CNT,NIMIX_IMM,NIMIX_DEP,MNUDEPO,NNUCCTO,NNUCCCO,\
-        NNUDEPO,NIHOMOO,HOMOO,SLFXCLD_ISOTM,CLD_ISOTM,CT_SLFXCLD_ISOTM,CT_CLD_ISOTM,\
-        AREI,AREl,FREQI,FREQL,AWNI,AWNC,ACTNI,ACTNL,ACTREI,ACTREL,CLDFREE,CLDHGH,\
-        CLDICE,CLDLIQ,CLDLOW,CLDMED,CLDTAU,CLDTOT,CLOUD,IWC,LWC,LWCF,SWCF,NUMLIQ,\
-        NUMRAI,PS,T,TS
+vars="NUMICE,BERGO,BERGSO,MNUCCTO,MNUCCRO,MNUCCCO,MNUCCDOhet,MNUCCDO,DSTFREZIMM,\
+      DSTFREZCNT,DSTFREZDEP,BCFREZIMM,BCFREZCNT,BCFREZDEP,NUMICE10s,NUMICE10sDST,\
+      NUMICE10sBC,dc_num,dst1_num,dst3_num,bc_c1_num,dst_c1_num,dst_c3_num,\
+      bc_num_scaled,dst1_num_scaled,dst3_num_scaled,DSTNIDEP,DSTNICNT,DSTNIIMM,\
+      BCNIDEP,BCNICNT,BCNIIMM,NUMICE10s,NUMIMM10sDST,NUMIMM10sBC,MPDI2V,MPDI2W,\
+      QISEDTEN,NIMIX_HET,NIMIX_CNT,NIMIX_IMM,NIMIX_DEP,MNUDEPO,NNUCCTO,NNUCCCO,\
+      NNUDEPO,NIHOMOO,HOMOO,SLFXCLD_ISOTM,CLD_ISOTM,CT_SLFXCLD_ISOTM,CT_CLD_ISOTM,\
+      AREI,AREl,FREQI,FREQL,AWNI,AWNC,ACTNI,ACTNL,ACTREI,ACTREL,CLDFREE,CLDHGH,\
+      CLDICE,CLDLIQ,CLDLOW,CLDMED,CLDTAU,CLDTOT,CLOUD,IWC,LWC,LWCF,SWCF,NUMLIQ,\
+      NUMRAI,PS,T,TS"
 
-cospvars=CLDLOW_CAL,CLDMED_CAL,CLDHGH_CAL,CLDTOT_CAL,CLD_CAL,CLD_CAL_LIQ,CLD_CAL_ICE,\
-         CLD_CAL_UN,CLDTOT_CAL_ICE,CLDTOT_CAL_LIQ,CLDTOT_CAL_UN,CLDHGH_CAL_ICE,\
-         CLDHGH_CAL_LIQ,CLDHGH_CAL_UN,CLDMED_CAL_ICE,CLDMED_CAL_LIQ,CLDMED_CAL_UN,\
-         CLDLOW_CAL_ICE,CLDLOW_CAL_LIQ,CLDLOW_CAL_UN,CLTMODIS,CLWMODIS,CLIMODIS,\
-         CLHMODIS,CLMMODIS,CLLMODIS
-############
+echo ${vars}
+
+cospvars="CLDLOW_CAL,CLDMED_CAL,CLDHGH_CAL,CLDTOT_CAL,CLD_CAL,CLD_CAL_LIQ,CLD_CAL_ICE,\
+  CLD_CAL_UN,CLDTOT_CAL_ICE,CLDTOT_CAL_LIQ,CLDTOT_CAL_UN,CLDHGH_CAL_ICE,\
+  CLDHGH_CAL_LIQ,CLDHGH_CAL_UN,CLDMED_CAL_ICE,CLDMED_CAL_LIQ,CLDMED_CAL_UN,\
+  CLDLOW_CAL_ICE,CLDLOW_CAL_LIQ,CLDLOW_CAL_UN,CLTMODIS,CLWMODIS,CLIMODIS,\
+  CLHMODIS,CLMMODIS,CLLMODIS"
+
+echo $cospvars
+
+testy=$vars | sed 's/ //g'
+echo $testy
+exit 1
+
+###########
 # SET INPUT ARGS
 ############
 
-args=("$@")
-dir_path=${args[0]}     # Directory path to h0 files
-vartype=${args[1]}      # specify cosp variables or not
+#args=("$@")
+dir_path=${1:-none}
+vartype=${2:-notcosp}
+
 # If running out of a directory and not passing it as an argument
 if [ $# -eq 0 ] ;  then
    FILES=$(find *.nc)
@@ -37,7 +47,7 @@ fi
 echo combining files in ${dir_path}
 
 FILES=$(find *.nc)
-echo $FILES
+#echo $FILES
 
 # Weird for loop to grab casename.
 noth=0
@@ -56,10 +66,15 @@ echo $casename.nc
 #exit 1 
 
 if [ $vartype = cosp ] ; then
-    finalvars=$vars,$cospvars
+    finalvars="$vars,$cospvars"
 else
-    finalvars=$vars
+    finalvars="$vars"
 fi
+
+echo $finalvars
+
+#exit 1
+
 #cdo -f nc2 mergetime *h0* ${casename}.nc # merge all h0 files and name with the casename
 
 #cdo select,name=u_gr_p,v_gr_p,u_10m_gr,v_10m_gr,DateTime $FILES ${casename}.nc
