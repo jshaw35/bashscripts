@@ -1,12 +1,19 @@
 #! /bin/bash -x
 
 # By Jonah Shaw, 03032020
-# Interpolating existing reanalysis data to a different resolution.
+# Interpolating existing GOCCP data to a different resolution.
 # Modelled after lines 207-230 in conv_ERA_interim.sh
 # TO-DO: build in 'help' feature using getopt
 
 # Example use:
-# sh interpolate.sh ERA_f19_tn14/res_file_T.nc ERA_f09f09_32L_days/ ERA_f19_tn14/ 2008
+# sh interpolateGOCCP.sh 2009
+
+# How-to on regridding:
+
+# Say ifile contains fields on a quadrilateral curvilinear grid.
+# To remap all fields bilinear to a Gaussian N32 grid use:
+# cdo genbil,n32 ifile remapweights.nc # creates the weights file
+# cdo remap,n32,remapweights.nc ifile ofile
 
 
 ############
@@ -14,47 +21,39 @@
 ############
 
 args=("$@")
-res_file=${args[0]}     # Path to an output file with appropriate resolution
-old_path=${args[1]}     # Directory path to reanalysis files to interpolate
-new_path=${args[2]}     # Directory path to store data
-year=${args[3]}         # Year to process
+year=${args[0]}         # Year to process
 
-echo $res_file $old_path $new_path $year # this works
+# Directory path for observations
+obs="$HOME/p/jonahks/GOCCP_data/2Ddata"
 
-# Create weights file from res_file:
-# 1: Grab T coordinates from res_file (simplest option)
-# cdo -s selname,T $res_file $new_path/res_file_T.nc
-# new_res=$new_path/res_file_T.nc 
+# Directory path for new resolution
+newres="$HOME/p/jonahks/resolution_stuff/res_file_f19_tn14.nc"
 
-first_file = ls $old_path/ | head -n 1
-echo $first_file
+cd $obs/$year/
 
-# 2: Create weights file for res_file's resolution
-cdo -s genbil,$res_file $first_file $new_path/weights.nc
-new_weights=$new_path/weights.nc
-
-# Say ifile contains fields on a quadrilateral curvilinear grid. 
-# To remap all fields bilinear to a Gaussian N32 grid use: 
-# cdo genbil,n32 ifile remapweights.nc # creates the weights file
-# cdo remap,n32,remapweights.nc ifile ofile
+# Path for interpolated output
+mkdir -p $obs/f19_tn14_interpolation/$year
+outdir=$obs/f19_tn14_interpolation/$year
 
 
-# cdo genbil,grid.nc infile weights.nc # grid.nc is the new grid, inf
-# cdo remap,grid.nc,weights.nc infile remapped.nc
+first_file=`ls | sort -n | head -1`
+echo "First file: " $first_file
 
-cd $old_path
+# Create weights file:
+cdo genbil,$newres $first_file $obs/remapweights.nc 
+new_weights=$obs/remapweights.nc
 
-files_old=$(find *MapLowMidHigh*)  # find all files for your year
-
-echo $files_old
-
-exit 1
+files_old=$(find *MapLowMidHigh*)  # find all GOCCP files
 
 # iterate through and interpolate using the new res and weight files
 for file_in in $files_old
 do
     echo $file_in
-    cdo -s remap,$new_res,$new_weights $file_in $new_path/$file_in
+
+    # I shouldn't have to do this at each step, but it removes an error that was coming up.
+    cdo genbil,$newres $file_in $obs/remapweights.nc
+
+    cdo -s remap,$newres,$new_weights $file_in $outdir/$file_in
 done
 
-exit 1
+
